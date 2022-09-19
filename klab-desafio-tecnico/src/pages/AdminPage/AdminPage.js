@@ -8,14 +8,26 @@ import { ShowAllProducts } from "../../functions/ShowAllProducts";
 import { FilterQuantity } from "../../functions/Filters/FilterQuantity";
 import { FilterDefect } from "../../functions/Filters/FilterDefect";
 import { FilterSale } from "../../functions/Filters/FilterSale";
+import {
+  listSearch,
+  listQuantity,
+  listDefect,
+  listSale,
+  listOrder,
+  listUpDown,
+} from "../../constants/LocalStorage/StorageAdmin";
 
 export const AdminPage = () => {
-  const [search, setSearch] = useState("");
-  const [quantityFilter, setQuantityFilter] = useState("");
-  const [defectFilter, setDefectFilter] = useState("");
-  const [saleFilter, setSaleFilter] = useState("");
-  const [order, setOrder] = useState("");
-  const [upDown, setUpDown] = useState("up");
+  const [search, setSearch] = useState(listSearch ? listSearch : "");
+  const [quantityFilter, setQuantityFilter] = useState(
+    listQuantity ? listQuantity : 0
+  );
+  const [defectFilter, setDefectFilter] = useState(
+    listDefect ? listDefect : ""
+  );
+  const [saleFilter, setSaleFilter] = useState(listSale ? listSale : "");
+  const [order, setOrder] = useState(listOrder ? listOrder : "");
+  const [upDown, setUpDown] = useState(listUpDown ? listUpDown : "up");
 
   const navigate = useNavigate();
 
@@ -38,6 +50,15 @@ export const AdminPage = () => {
     setUpDown(data);
   };
 
+  useEffect(() => {
+    localStorage.setItem("searchList", search);
+    localStorage.setItem("quantityFilterList", quantityFilter);
+    localStorage.setItem("defectFilterList", defectFilter);
+    localStorage.setItem("saleFilterList", saleFilter);
+    localStorage.setItem("orderList", order);
+    localStorage.setItem("upDownList", upDown);
+  }, [search, quantityFilter, defectFilter, saleFilter, order, upDown]);
+
   const cloneProducts = [...repositorio];
   const parameters = {
     cloneProducts,
@@ -58,9 +79,11 @@ export const AdminPage = () => {
       return ShowAllProducts(FilterDefect(parameters, upDown));
     } else if (order === "sale") {
       return ShowAllProducts(FilterSale(parameters, upDown));
+    } else if (order === "price") {
+      return ShowAllProducts();
     }
   };
-  console.log(upDown);
+
   return (
     <div>
       <table>
@@ -73,7 +96,7 @@ export const AdminPage = () => {
             <th>Valor</th>
           </tr>
         </thead>
-        <tbody>{products()}</tbody>
+        <tbody>{products().length ? products() : <p>nada encontrado</p>}</tbody>
       </table>
       <input
         type="text"
@@ -81,7 +104,7 @@ export const AdminPage = () => {
         value={search}
         placeholder={"Filtro de texto"}
       />
-      <select onChange={onChangeQuantityFilter}>
+      <select onChange={onChangeQuantityFilter} defaultValue={quantityFilter}>
         <option disabled="disabled" select="true">
           Quantidade em Estoque
         </option>
@@ -89,7 +112,7 @@ export const AdminPage = () => {
         <option value={50}>Quantidade acima de 50</option>
         <option value={75}>Quantidade acima de 75</option>
       </select>
-      <select onChange={onChangeOrder}>
+      <select onChange={onChangeOrder} defaultValue={order}>
         <option disabled="disabled" select="true">
           Ordernar
         </option>
@@ -98,6 +121,7 @@ export const AdminPage = () => {
         <option value="quantity">Ordem por Quantidade</option>
         <option value="defect">Ordem por Defeito</option>
         <option value="sale">Ordem por Venda</option>
+        <option value="price">Order por Valor</option>
       </select>
       <p onClick={() => upDownFunction("up")}>UP</p>
       <p onClick={() => upDownFunction("down")}>DOWN</p>

@@ -40,3 +40,4 @@ export const QuantityNumber = styled.p`
   font-weight: bold;
   margin-left: 10px;
 `;
+export const ProductPrice = styled.p``;

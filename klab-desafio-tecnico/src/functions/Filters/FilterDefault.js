@@ -7,5 +7,6 @@ export const FilterDefault = (parameters) => {
       item.quantidade - item.defeito >= parameters.saleFilter
     );
   });
+
   return FilterDefaultArray;
 };

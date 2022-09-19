@@ -12,6 +12,7 @@ import {
   ProductQuantity,
   QuantityNumber,
   ContainerGeral,
+  ProductPrice,
 } from "./styled";
 
 export const Card = (props) => {
@@ -28,6 +29,12 @@ export const Card = (props) => {
           <ProductQuantity>
             Disponíveis: <QuantityNumber>{props.quantitySale}</QuantityNumber>
           </ProductQuantity>
+          <ProductPrice>
+            {props.price.toLocaleString("pt-BR", {
+              style: "currency",
+              currency: "BRL",
+            })}
+          </ProductPrice>
         </DetailsDiv>
       </Container>
     </ContainerGeral>
