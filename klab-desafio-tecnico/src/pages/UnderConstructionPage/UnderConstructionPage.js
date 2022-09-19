@@ -1,14 +1,14 @@
 import React from "react";
-import { Gif, Container, Text, BackButton } from "./styled";
 import { useNavigate } from "react-router-dom";
 import { GoTo } from "../../functions/GoTo";
+import { Container, Text, Gif, BackButton } from "./styled";
 
-export const ErrorPage = () => {
+export const UnderConstructionPage = () => {
   const navigate = useNavigate();
   return (
     <Container>
-      <Text>URL Não Encontrada</Text>
-      <Gif src="https://i.gifer.com/yH.gif" />
+      <Text>Página em Construção</Text>
+      <Gif src="https://i.gifer.com/ZSj2.gif" />
       <BackButton onClick={() => GoTo(navigate, "/")}>
         Voltar para Home
       </BackButton>

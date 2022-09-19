@@ -1,19 +1,37 @@
-import React from "react";
-import { useState } from "react";
-import { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import repositorio from "../../constants/repositorio.json";
-import { Container, ProductsDiv } from "./styled";
+import {
+  Container,
+  ProductsDiv,
+  FiltersDiv,
+  TitleDiv,
+  TitleStyle,
+} from "./styled";
 import { ShowAllProductsCard } from "../../functions/ShowAllProductsCard";
+import { FilterDefaultCard } from "../../functions/Filters/FilterDefaultCard";
+import { FilterAlphabeticCard } from "../../functions/Filters/FilterAlphabeticCard";
+import { FilterQuantityCard } from "../../functions/Filters/FilterQuantityCard";
+import { FilterPriceCard } from "../../functions/Filters/FilterPriceCard";
 import {
   cardSearch,
   cardQuantity,
   cardOrder,
   cardUpDown,
 } from "../../constants/LocalStorage/StorageHome";
-import { FilterDefaultCard } from "../../functions/Filters/FilterDefaultCard";
-import { FilterAlphabeticCard } from "../../functions/Filters/FilterAlphabeticCard";
-import { FilterQuantityCard } from "../../functions/Filters/FilterQuantityCard";
-import { FilterPriceCard } from "../../functions/Filters/FilterPriceCard";
+
+import { Header } from "../../components/Header/Header";
+import UpIcon from "../../assets/upIcon.png";
+import DownIcon from "../../assets/downIcon.png";
+import { Input } from "../../reusableStyles/Input";
+import { Select } from "../../reusableStyles/Select";
+import { Option } from "../../reusableStyles/Option";
+import {
+  DivUpDown,
+  IconUpDown,
+  TextUpDown,
+} from "../../reusableStyles/UpDownStyle";
+import { Footer } from "../../components/Footer/Footer";
+import { Card } from "../../components/Card/Card";
 
 export const HomePage = () => {
   const [searchCard, setSearchCard] = useState(cardSearch ? cardSearch : "");
@@ -65,35 +83,51 @@ export const HomePage = () => {
 
   return (
     <Container>
-      <input
-        type="text"
-        onChange={onChangeSearchCard}
-        value={searchCard}
-        placeholder={"Filtro de texto"}
-      />
-      <select
-        onChange={onChangeQuantityFilterCard}
-        defaultValue={quantityFilterCard}
-      >
-        <option disabled="disabled" select="true">
-          Quantidade em Estoque
-        </option>
-        <option value={0}>Todos os produtos</option>
-        <option value={50}>Quantidade acima de 50</option>
-        <option value={75}>Quantidade acima de 75</option>
-      </select>
-      <select onChange={onChangeOrderCard} defaultValue={orderCard}>
-        <option disabled="disabled" select="true">
-          Ordernar
-        </option>
-        <option value="">Sem ordem</option>
-        <option value="alphabetic">Ordem Alfabética</option>
-        <option value="quantity">Ordem por Quantidade</option>
-        <option value="price">Order por Valor</option>
-      </select>
-      <p onClick={() => upDownFunction("up")}>UP</p>
-      <p onClick={() => upDownFunction("down")}>DOWN</p>
-      <ProductsDiv>{productsCard()}</ProductsDiv>
+      {Header("admin")}
+      <TitleDiv>
+        <TitleStyle>NOSSOS PRODUTOS</TitleStyle>
+      </TitleDiv>
+      <FiltersDiv>
+        <Input
+          type="text"
+          onChange={onChangeSearchCard}
+          value={searchCard}
+          placeholder={"Filtro de texto"}
+        />
+        <Select
+          onChange={onChangeQuantityFilterCard}
+          defaultValue={quantityFilterCard}
+        >
+          <Option disabled="disabled" select="true">
+            Quantidade em Estoque
+          </Option>
+          <Option value={0}>Todos os produtos</Option>
+          <Option value={50}>Quantidade acima de 50</Option>
+          <Option value={75}>Quantidade acima de 75</Option>
+        </Select>
+        <Select onChange={onChangeOrderCard} defaultValue={orderCard}>
+          <Option disabled="disabled" select="true">
+            Ordernar
+          </Option>
+          <Option value="">Sem ordem</Option>
+          <Option value="alphabetic">Ordem Alfabética</Option>
+          <Option value="quantity">Ordem por Quantidade</Option>
+          <Option value="price">Order por Valor</Option>
+        </Select>
+        <DivUpDown onClick={() => upDownFunction("up")}>
+          <TextUpDown>Crescente</TextUpDown>
+          <IconUpDown src={UpIcon} />
+        </DivUpDown>
+        <DivUpDown onClick={() => upDownFunction("down")}>
+          <TextUpDown>Decrescente</TextUpDown>
+          <IconUpDown src={DownIcon} />
+        </DivUpDown>
+      </FiltersDiv>
+
+      <ProductsDiv>
+        {productsCard().length ? productsCard() : <Card type="notfound" />}
+      </ProductsDiv>
+      <Footer />
     </Container>
   );
 };

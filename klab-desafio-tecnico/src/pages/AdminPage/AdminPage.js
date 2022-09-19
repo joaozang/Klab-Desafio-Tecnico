@@ -1,10 +1,21 @@
 import React, { useEffect, useState } from "react";
 import repositorio from "../../constants/repositorio.json";
-import { GoTo } from "../../functions/GoTo";
+import {
+  Container,
+  FiltersDiv,
+  TitleDiv,
+  TitleStyle,
+  Table,
+  Thead,
+  Tr,
+  Th,
+  Tbody,
+  NotFoundMessage,
+} from "./styled";
 import { useNavigate } from "react-router-dom";
 import { FilterDefault } from "../../functions/Filters/FilterDefault";
 import { FilterAlphabetic } from "../../functions/Filters/FilterAlphabetic";
-import { ShowAllProducts } from "../../functions/ShowAllProducts";
+import { ShowAllProductsList } from "../../functions/ShowAllProductsList";
 import { FilterQuantity } from "../../functions/Filters/FilterQuantity";
 import { FilterDefect } from "../../functions/Filters/FilterDefect";
 import { FilterSale } from "../../functions/Filters/FilterSale";
@@ -16,6 +27,18 @@ import {
   listOrder,
   listUpDown,
 } from "../../constants/LocalStorage/StorageAdmin";
+import { Header } from "../../components/Header/Header";
+import { Input } from "../../reusableStyles/Input";
+import { Select } from "../../reusableStyles/Select";
+import { Option } from "../../reusableStyles/Option";
+import UpIcon from "../../assets/upIcon.png";
+import DownIcon from "../../assets/downIcon.png";
+import {
+  DivUpDown,
+  IconUpDown,
+  TextUpDown,
+} from "../../reusableStyles/UpDownStyle";
+import { Footer } from "../../components/Footer/Footer";
 
 export const AdminPage = () => {
   const [search, setSearch] = useState(listSearch ? listSearch : "");
@@ -68,76 +91,94 @@ export const AdminPage = () => {
     saleFilter,
   };
 
-  const products = () => {
+  const productsList = () => {
     if (order === "") {
-      return ShowAllProducts(FilterDefault(parameters));
+      return ShowAllProductsList(FilterDefault(parameters));
     } else if (order === "alphabetic") {
-      return ShowAllProducts(FilterAlphabetic(parameters, upDown));
+      return ShowAllProductsList(FilterAlphabetic(parameters, upDown));
     } else if (order === "quantity") {
-      return ShowAllProducts(FilterQuantity(parameters, upDown));
+      return ShowAllProductsList(FilterQuantity(parameters, upDown));
     } else if (order === "defect") {
-      return ShowAllProducts(FilterDefect(parameters, upDown));
+      return ShowAllProductsList(FilterDefect(parameters, upDown));
     } else if (order === "sale") {
-      return ShowAllProducts(FilterSale(parameters, upDown));
+      return ShowAllProductsList(FilterSale(parameters, upDown));
     } else if (order === "price") {
-      return ShowAllProducts();
+      return ShowAllProductsList();
     }
   };
 
   return (
-    <div>
-      <table>
-        <thead>
-          <tr>
-            <th>Nome do Produto</th>
-            <th>Quantidade em Estoque</th>
-            <th>Peças com Defeitos</th>
-            <th>Peças para Venda</th>
-            <th>Valor</th>
-          </tr>
-        </thead>
-        <tbody>{products().length ? products() : <p>nada encontrado</p>}</tbody>
-      </table>
-      <input
-        type="text"
-        onChange={onChangeSearch}
-        value={search}
-        placeholder={"Filtro de texto"}
-      />
-      <select onChange={onChangeQuantityFilter} defaultValue={quantityFilter}>
-        <option disabled="disabled" select="true">
-          Quantidade em Estoque
-        </option>
-        <option value={0}>Todos os produtos</option>
-        <option value={50}>Quantidade acima de 50</option>
-        <option value={75}>Quantidade acima de 75</option>
-      </select>
-      <select onChange={onChangeOrder} defaultValue={order}>
-        <option disabled="disabled" select="true">
-          Ordernar
-        </option>
-        <option value="">Sem ordem</option>
-        <option value="alphabetic">Ordem Alfabética</option>
-        <option value="quantity">Ordem por Quantidade</option>
-        <option value="defect">Ordem por Defeito</option>
-        <option value="sale">Ordem por Venda</option>
-        <option value="price">Order por Valor</option>
-      </select>
-      <p onClick={() => upDownFunction("up")}>UP</p>
-      <p onClick={() => upDownFunction("down")}>DOWN</p>
-      <input
-        placeholder="Peças com defeito"
-        type="number"
-        onChange={onChangeDefectFilter}
-        value={defectFilter}
-      />
-      <input
-        placeholder="Peças para venda"
-        type="number"
-        onChange={onChangeSaleFilter}
-        value={saleFilter}
-      />
-      <p onClick={() => GoTo(navigate, `/`)}>ir para pagina da loja</p>
-    </div>
+    <Container>
+      {Header("home")}
+      <TitleDiv>
+        <TitleStyle>ÁREA ADMINISTRATIVA</TitleStyle>
+      </TitleDiv>
+      <FiltersDiv>
+        <Input
+          type="text"
+          onChange={onChangeSearch}
+          value={search}
+          placeholder={"Filtro de texto"}
+        />
+        <Select onChange={onChangeQuantityFilter} defaultValue={quantityFilter}>
+          <Option disabled="disabled" select="true">
+            Quantidade em Estoque
+          </Option>
+          <Option value={0}>Todos os produtos</Option>
+          <Option value={50}>Quantidade acima de 50</Option>
+          <Option value={75}>Quantidade acima de 75</Option>
+        </Select>
+        <Input
+          placeholder="Peças com defeito"
+          type="number"
+          onChange={onChangeDefectFilter}
+          value={defectFilter}
+        />
+        <Input
+          placeholder="Peças para venda"
+          type="number"
+          onChange={onChangeSaleFilter}
+          value={saleFilter}
+        />
+        <Select onChange={onChangeOrder} defaultValue={order}>
+          <Option disabled="disabled" select="true">
+            Ordernar
+          </Option>
+          <Option value="">Sem ordem</Option>
+          <Option value="alphabetic">Ordem Alfabética</Option>
+          <Option value="quantity">Ordem por Quantidade</Option>
+          <Option value="defect">Ordem por Defeito</Option>
+          <Option value="sale">Ordem por Venda</Option>
+          <Option value="price">Order por Valor</Option>
+        </Select>
+        <DivUpDown onClick={() => upDownFunction("up")}>
+          <TextUpDown>Crescente</TextUpDown>
+          <IconUpDown src={UpIcon} />
+        </DivUpDown>
+        <DivUpDown onClick={() => upDownFunction("down")}>
+          <TextUpDown>Decrescente</TextUpDown>
+          <IconUpDown src={DownIcon} />
+        </DivUpDown>
+      </FiltersDiv>
+      <Table>
+        <Thead>
+          <Tr>
+            <Th>Nome do Produto</Th>
+            <Th>Quantidade em Estoque</Th>
+            <Th>Peças com Defeitos</Th>
+            <Th>Peças para Venda</Th>
+            <Th>Valor</Th>
+          </Tr>
+        </Thead>
+        <Tbody>
+          {productsList().length ? (
+            productsList()
+          ) : (
+            <NotFoundMessage>NADA ENCONTRADO</NotFoundMessage>
+          )}
+        </Tbody>
+      </Table>
+      <Footer />
+    </Container>
   );
 };
