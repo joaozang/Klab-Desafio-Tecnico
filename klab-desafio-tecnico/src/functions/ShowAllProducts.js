@@ -6,6 +6,12 @@ export const ShowAllProducts = (array) => {
         <td>{itens.quantidade}</td>
         <td>{itens.defeito}</td>
         <td>{itens.quantidade - itens.defeito}</td>
+        <td>
+          {itens.valor.toLocaleString("pt-BR", {
+            style: "currency",
+            currency: "BRL",
+          })}
+        </td>
       </tr>
     );
   });

@@ -70,6 +70,7 @@ export const AdminPage = () => {
             <th>Quantidade em Estoque</th>
             <th>Peças com Defeitos</th>
             <th>Peças para Venda</th>
+            <th>Valor</th>
           </tr>
         </thead>
         <tbody>{products()}</tbody>
