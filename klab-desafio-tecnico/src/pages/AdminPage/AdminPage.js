@@ -2,11 +2,21 @@ import React, { useEffect, useState } from "react";
 import repositorio from "../../constants/repositorio.json";
 import { GoTo } from "../../functions/GoTo";
 import { useNavigate } from "react-router-dom";
+import { FilterDefault } from "../../functions/Filters/FilterDefault";
+import { FilterAlphabetic } from "../../functions/Filters/FilterAlphabetic";
+import { ShowAllProducts } from "../../functions/ShowAllProducts";
+import { FilterQuantity } from "../../functions/Filters/FilterQuantity";
+import { FilterDefect } from "../../functions/Filters/FilterDefect";
+import { FilterSale } from "../../functions/Filters/FilterSale";
 
 export const AdminPage = () => {
   const [search, setSearch] = useState("");
   const [quantityFilter, setQuantityFilter] = useState("");
-  const [alphabeticOrder, setAlphabeticOrder] = useState("");
+  const [defectFilter, setDefectFilter] = useState("");
+  const [saleFilter, setSaleFilter] = useState("");
+  const [order, setOrder] = useState("");
+  const [upDown, setUpDown] = useState("up");
+
   const navigate = useNavigate();
 
   const onChangeSearch = (event) => {
@@ -15,55 +25,42 @@ export const AdminPage = () => {
   const onChangeQuantityFilter = (event) => {
     setQuantityFilter(event.target.value);
   };
-  const onChangeAlphabeticOrder = (event) => {
-    setAlphabeticOrder(event.target.value);
+  const onChangeDefectFilter = (event) => {
+    setDefectFilter(event.target.value);
   };
+  const onChangeSaleFilter = (event) => {
+    setSaleFilter(event.target.value);
+  };
+  const onChangeOrder = (event) => {
+    setOrder(event.target.value);
+  };
+  const upDownFunction = (data) => {
+    setUpDown(data);
+  };
+
   const cloneProducts = [...repositorio];
+  const parameters = {
+    cloneProducts,
+    search,
+    quantityFilter,
+    defectFilter,
+    saleFilter,
+  };
 
-  const products =
-    alphabeticOrder === ""
-      ? repositorio
-          .filter((item) => {
-            return (
-              item.produto.toLowerCase().includes(search.toLowerCase()) &&
-              item.quantidade >= quantityFilter
-            );
-          })
-          .map((itens, index) => {
-            return (
-              <tr key={index}>
-                <td>{itens.produto}</td>
-                <td>{itens.quantidade}</td>
-                <td>{itens.defeito}</td>
-                <td>{itens.quantidade - itens.defeito}</td>
-              </tr>
-            );
-          })
-      : cloneProducts
-          .sort((a, b) => {
-            if (a.produto < b.produto) return -1;
-
-            if (a.produto > b.produto) return 1;
-
-            return 0;
-          })
-          .filter((item) => {
-            return (
-              item.produto.toLowerCase().includes(search.toLowerCase()) &&
-              item.quantidade >= quantityFilter
-            );
-          })
-          .map((itens, index) => {
-            return (
-              <tr key={index}>
-                <td>{itens.produto}</td>
-                <td>{itens.quantidade}</td>
-                <td>{itens.defeito}</td>
-                <td>{itens.quantidade - itens.defeito}</td>
-              </tr>
-            );
-          });
-
+  const products = () => {
+    if (order === "") {
+      return ShowAllProducts(FilterDefault(parameters));
+    } else if (order === "alphabetic") {
+      return ShowAllProducts(FilterAlphabetic(parameters, upDown));
+    } else if (order === "quantity") {
+      return ShowAllProducts(FilterQuantity(parameters, upDown));
+    } else if (order === "defect") {
+      return ShowAllProducts(FilterDefect(parameters, upDown));
+    } else if (order === "sale") {
+      return ShowAllProducts(FilterSale(parameters, upDown));
+    }
+  };
+  console.log(upDown);
   return (
     <div>
       <table>
@@ -75,9 +72,7 @@ export const AdminPage = () => {
             <th>Peças para Venda</th>
           </tr>
         </thead>
-        <tbody>
-          {products.length ? products : <p>Produto não encontrado</p>}
-        </tbody>
+        <tbody>{products()}</tbody>
       </table>
       <input
         type="text"
@@ -93,13 +88,30 @@ export const AdminPage = () => {
         <option value={50}>Quantidade acima de 50</option>
         <option value={75}>Quantidade acima de 75</option>
       </select>
-      <select onChange={onChangeAlphabeticOrder}>
+      <select onChange={onChangeOrder}>
         <option disabled="disabled" select="true">
           Ordernar
         </option>
         <option value="">Sem ordem</option>
-        <option value="Com ordem">Ordem Alfabética</option>
+        <option value="alphabetic">Ordem Alfabética</option>
+        <option value="quantity">Ordem por Quantidade</option>
+        <option value="defect">Ordem por Defeito</option>
+        <option value="sale">Ordem por Venda</option>
       </select>
+      <p onClick={() => upDownFunction("up")}>UP</p>
+      <p onClick={() => upDownFunction("down")}>DOWN</p>
+      <input
+        placeholder="Peças com defeito"
+        type="number"
+        onChange={onChangeDefectFilter}
+        value={defectFilter}
+      />
+      <input
+        placeholder="Peças para venda"
+        type="number"
+        onChange={onChangeSaleFilter}
+        value={saleFilter}
+      />
       <p onClick={() => GoTo(navigate, `/`)}>ir para pagina da loja</p>
     </div>
   );
