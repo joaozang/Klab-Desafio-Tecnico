@@ -10,11 +10,10 @@ import {
 import { ShowAllProductsCard } from "../../functions/ShowAllProductsCard";
 import { FilterDefaultCard } from "../../functions/Filters/FilterDefaultCard";
 import { FilterAlphabeticCard } from "../../functions/Filters/FilterAlphabeticCard";
-import { FilterQuantityCard } from "../../functions/Filters/FilterQuantityCard";
 import { FilterPriceCard } from "../../functions/Filters/FilterPriceCard";
+import { FilterQuantityCard } from "../../functions/Filters/FilterQuantityCard";
 import {
   cardSearch,
-  cardQuantity,
   cardOrder,
   cardUpDown,
 } from "../../constants/LocalStorage/StorageHome";
@@ -35,17 +34,11 @@ import { Card } from "../../components/Card/Card";
 
 export const HomePage = () => {
   const [searchCard, setSearchCard] = useState(cardSearch ? cardSearch : "");
-  const [quantityFilterCard, setQuantityFilterCard] = useState(
-    cardQuantity ? cardQuantity : 0
-  );
   const [orderCard, setOrderCard] = useState(cardOrder ? cardOrder : "");
   const [upDownCard, setUpDownCard] = useState(cardUpDown ? cardUpDown : "up");
 
   const onChangeSearchCard = (event) => {
     setSearchCard(event.target.value);
-  };
-  const onChangeQuantityFilterCard = (event) => {
-    setQuantityFilterCard(event.target.value);
   };
   const onChangeOrderCard = (event) => {
     setOrderCard(event.target.value);
@@ -57,16 +50,14 @@ export const HomePage = () => {
 
   useEffect(() => {
     localStorage.setItem("searchCard", searchCard);
-    localStorage.setItem("quantityCard", quantityFilterCard);
     localStorage.setItem("orderCard", orderCard);
     localStorage.setItem("upDownCard", upDownCard);
-  }, [searchCard, quantityFilterCard, orderCard, upDownCard]);
+  }, [searchCard, , orderCard, upDownCard]);
 
   const cloneProducts = [...repositorio];
   const parameters = {
     cloneProducts,
     search: searchCard,
-    quantityFilter: quantityFilterCard,
   };
 
   const productsCard = () => {
@@ -94,17 +85,6 @@ export const HomePage = () => {
           value={searchCard}
           placeholder={"Filtro de texto"}
         />
-        <Select
-          onChange={onChangeQuantityFilterCard}
-          defaultValue={quantityFilterCard}
-        >
-          <Option disabled="disabled" select="true">
-            Quantidade em Estoque
-          </Option>
-          <Option value={0}>Todos os produtos</Option>
-          <Option value={50}>Quantidade acima de 50</Option>
-          <Option value={75}>Quantidade acima de 75</Option>
-        </Select>
         <Select onChange={onChangeOrderCard} defaultValue={orderCard}>
           <Option disabled="disabled" select="true">
             Ordernar
